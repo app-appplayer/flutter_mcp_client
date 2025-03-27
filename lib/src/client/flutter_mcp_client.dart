@@ -2,8 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mcp_client/mcp_client.dart';
-import 'package:mcp_client/logger.dart';
-import 'package:flutter_mcp_common/flutter_mcp_common.dart' hide LogLevel;
+import 'package:flutter_mcp_common/flutter_mcp_common.dart';
 import 'package:uuid/uuid.dart';
 
 import 'flutter_mcp_client_config.dart';
@@ -288,7 +287,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
   }
   
   /// Set the logging level
-  Future<void> setLoggingLevel(LogLevel level) async {
+  Future<void> setLoggingLevel(McpLogLevel level) async {
     _checkConnection();
     return await _client.setLoggingLevel(level);
   }
@@ -319,7 +318,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
   }
   
   /// Register for notification of logging events
-  void onLogging(Function(LogLevel, String, String?, Map<String, dynamic>?) handler) {
+  void onLogging(Function(McpLogLevel, String, String?, Map<String, dynamic>?) handler) {
     _client.onLogging(handler);
   }
   
