@@ -4,6 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
+  flutter_mcp_client
+  flutter_mcp_common
   flutter_secure_storage_windows
 )
 

@@ -2,14 +2,15 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mcp_client/mcp_client.dart';
-import 'package:flutter_mcp_common/flutter_mcp_common.dart';
+import 'package:mcp_client/logger.dart';
+import 'package:flutter_mcp_common/flutter_mcp_common.dart' hide LogLevel;
 import 'package:uuid/uuid.dart';
 
 import 'flutter_mcp_client_config.dart';
 import 'flutter_mcp_connection_manager.dart';
 
 /// Connection states for Flutter MCP client
-enum ConnectionState {
+enum ClientConnectionState {
   /// Client is disconnected
   disconnected,
   
@@ -41,10 +42,10 @@ class FlutterMcpClient with WidgetsBindingObserver {
   late final FlutterMcpConnectionManager _connectionManager;
   
   /// Current connection state
-  ConnectionState _connectionState = ConnectionState.disconnected;
+  ClientConnectionState _connectionState = ClientConnectionState.disconnected;
   
   /// Stream controller for connection state changes
-  final _connectionStateController = StreamController<ConnectionState>.broadcast();
+  final _connectionStateController = StreamController<ClientConnectionState>.broadcast();
   
   /// Stream controller for error events
   final _errorController = StreamController<McpError>.broadcast();
@@ -122,17 +123,17 @@ class FlutterMcpClient with WidgetsBindingObserver {
   Client get mcpClient => _client;
   
   /// Get current connection state
-  ConnectionState get connectionState => _connectionState;
+  ClientConnectionState get connectionState => _connectionState;
   
   /// Stream of connection state changes
-  Stream<ConnectionState> get connectionStateStream => _connectionStateController.stream;
+  Stream<ClientConnectionState> get connectionStateStream => _connectionStateController.stream;
   
   /// Stream of error events
   Stream<McpError> get errorStream => _errorController.stream;
   
   /// Whether the client is currently connected
   bool get isConnected => 
-      _connectionState == ConnectionState.connected && 
+      _connectionState == ClientConnectionState.connected &&
       _client.isConnected;
   
   /// Get server capabilities
@@ -147,7 +148,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
       throw StateError('Client has been disposed');
     }
     
-    if (_connectionState == ConnectionState.connecting) {
+    if (_connectionState == ClientConnectionState.connecting) {
       throw StateError('Already connecting to a transport');
     }
     
@@ -155,14 +156,13 @@ class FlutterMcpClient with WidgetsBindingObserver {
     _transport = transport;
     
     // Update state
-    _setConnectionState(ConnectionState.connecting);
+    _setConnectionState(ClientConnectionState.connecting);
     
     try {
       // Connect to transport
       await _client.connect(transport);
-      
       // Update state
-      _setConnectionState(ConnectionState.connected);
+      _setConnectionState(ClientConnectionState.connected);
       
       // Set up tool events listener if needed
       if (config.handleToolEvents) {
@@ -176,7 +176,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
       
     } catch (e) {
       // Update state
-      _setConnectionState(ConnectionState.error);
+      _setConnectionState(ClientConnectionState.error);
       
       // Add error to error stream
       if (e is McpError) {
@@ -195,7 +195,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
       return;
     }
     
-    if (_connectionState == ConnectionState.disconnected) {
+    if (_connectionState == ClientConnectionState.disconnected) {
       return;
     }
     
@@ -206,7 +206,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
     _client.disconnect();
     
     // Update state
-    _setConnectionState(ConnectionState.disconnected);
+    _setConnectionState(ClientConnectionState.disconnected);
   }
   
   /// List available tools
@@ -288,7 +288,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
   }
   
   /// Set the logging level
-  Future<void> setLoggingLevel(McpLogLevel level) async {
+  Future<void> setLoggingLevel(LogLevel level) async {
     _checkConnection();
     return await _client.setLoggingLevel(level);
   }
@@ -319,7 +319,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
   }
   
   /// Register for notification of logging events
-  void onLogging(Function(McpLogLevel, String, String?, Map<String, dynamic>?) handler) {
+  void onLogging(Function(LogLevel, String, String?, Map<String, dynamic>?) handler) {
     _client.onLogging(handler);
   }
   
@@ -327,14 +327,14 @@ class FlutterMcpClient with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Only handle if client is connected and not disposed
-    if (_isDisposed || _connectionState != ConnectionState.connected) {
+    if (_isDisposed || _connectionState != ClientConnectionState.connected) {
       return;
     }
     
     switch (state) {
       case AppLifecycleState.resumed:
         // Resume connection if it was paused
-        if (_connectionState == ConnectionState.paused) {
+        if (_connectionState == ClientConnectionState.paused) {
           _resumeConnection();
         }
         
@@ -389,7 +389,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
     _isDisposed = true;
     
     // Disconnect if connected
-    if (_connectionState != ConnectionState.disconnected) {
+    if (_connectionState != ClientConnectionState.disconnected) {
       _client.disconnect();
     }
     
@@ -408,7 +408,7 @@ class FlutterMcpClient with WidgetsBindingObserver {
   }
   
   /// Set connection state and notify listeners
-  void _setConnectionState(ConnectionState state) {
+  void _setConnectionState(ClientConnectionState state) {
     if (_connectionState != state) {
       _connectionState = state;
       _connectionStateController.add(state);
@@ -443,15 +443,15 @@ class FlutterMcpClient with WidgetsBindingObserver {
   
   /// Pause connection (when app goes to background)
   void _pauseConnection() {
-    if (_connectionState == ConnectionState.connected) {
-      _setConnectionState(ConnectionState.paused);
+    if (_connectionState == ClientConnectionState.connected) {
+      _setConnectionState(ClientConnectionState.paused);
     }
   }
   
   /// Resume connection (when app comes to foreground)
   void _resumeConnection() {
-    if (_connectionState == ConnectionState.paused) {
-      _setConnectionState(ConnectionState.connected);
+    if (_connectionState == ClientConnectionState.paused) {
+      _setConnectionState(ClientConnectionState.connected);
     }
   }
 }

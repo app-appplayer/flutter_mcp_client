@@ -13,27 +13,18 @@ export 'src/transport/flutter_mcp_transport_factory.dart';
 export 'src/widgets/flutter_mcp_tools_widget.dart';
 export 'src/widgets/flutter_mcp_status_widget.dart';
 
-// Re-export MCP client core types for convenience
-export 'package:mcp_client/mcp_client.dart' show
-Tool,
-Resource,
-ResourceTemplate,
-ResourceContentInfo,
-CallToolResult,
-ReadResourceResult,
-PromptArgument,
-Prompt,
-GetPromptResult,
-Message,
-Content,
-TextContent,
-ImageContent,
-ResourceContent,
-ModelHint,
-ModelPreferences,
-CreateMessageRequest,
-CreateMessageResult,
-Root,
-McpLogLevel,
-McpError,
-ClientCapabilities;
+// Models
+export 'src/models/flutter_mcp_client_models.dart';
+
+// Re-export common classes from flutter_mcp_common
+export 'package:flutter_mcp_common/flutter_mcp_common.dart' show
+FlutterMcpPlatform,
+FlutterMcpLifecycleManager,
+FlutterMcpConfig,
+FlutterMcpBackgroundService,
+FlutterMcpBackgroundIsolate,
+FlutterMcpNetworkManager,
+NetworkQuality,
+FlutterMcpNotificationManager,
+FlutterMcpSecureStorage,
+AppResourceMode;

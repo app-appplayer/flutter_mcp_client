@@ -79,36 +79,36 @@ class FlutterMcpConnectionManager {
   }
   
   /// Handle connection state changes
-  void _handleConnectionStateChange(ConnectionState state) {
+  void _handleConnectionStateChange(ClientConnectionState state) {
     if (_isDisposed) return;
     
     switch (state) {
-      case ConnectionState.disconnected:
+      case ClientConnectionState.disconnected:
         // Attempt to reconnect if auto-reconnect is enabled and not in background mode
         if (autoReconnect && !_backgroundMode && !_isReconnecting) {
           _scheduleReconnect();
         }
         break;
       
-      case ConnectionState.connected:
+      case ClientConnectionState.connected:
         // Reset reconnection attempts on successful connection
         _reconnectAttempt = 0;
         _cancelReconnect();
         break;
       
-      case ConnectionState.error:
+      case ClientConnectionState.error:
         // Handle error state - possibly attempt reconnection
         if (autoReconnect && !_backgroundMode && !_isReconnecting) {
           _scheduleReconnect();
         }
         break;
       
-      case ConnectionState.paused:
+      case ClientConnectionState.paused:
         // Cancel reconnection attempts when paused
         _cancelReconnect();
         break;
         
-      case ConnectionState.connecting:
+      case ClientConnectionState.connecting:
         // Nothing specific to do here
         break;
     }
@@ -120,8 +120,8 @@ class FlutterMcpConnectionManager {
     
     // If we regain connectivity and client is disconnected, try to reconnect
     if (result != ConnectivityResult.none && 
-        client.connectionState != ConnectionState.connected && 
-        client.connectionState != ConnectionState.connecting &&
+        client.connectionState != ClientConnectionState.connected &&
+        client.connectionState != ClientConnectionState.connecting &&
         autoReconnect && 
         !_backgroundMode && 
         !_isReconnecting) {
@@ -239,8 +239,8 @@ class FlutterMcpConnectionManager {
     } else {
       // When returning from background, check if we need to reconnect
       if (autoReconnect && 
-          client.connectionState != ConnectionState.connected && 
-          client.connectionState != ConnectionState.connecting && 
+          client.connectionState != ClientConnectionState.connected &&
+          client.connectionState != ClientConnectionState.connecting &&
           !_isReconnecting) {
         _scheduleReconnect();
       }

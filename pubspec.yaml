@@ -12,14 +12,14 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  mcp_client: ^0.1.1
-  flutter_mcp_common: ^0.0.1
-  #  path: ../flutter_mcp_common
+  mcp_client:
+    path: ../mcp_client
+  flutter_mcp_common:
+    path: ../flutter_mcp_common
   provider: ^6.0.5
   rxdart: ^0.27.7
   equatable: ^2.0.5
   uuid: ^4.0.0
-  logger: ^2.0.1
   shared_preferences: ^2.5.2
   connectivity_plus: ^4.0.2
 
@@ -35,7 +35,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.appplayer.flutter_mcp_client
+        package: app.appplayer.flutter_mcp_client
         pluginClass: FlutterMcpClientPlugin
       ios:
         pluginClass: FlutterMcpClientPlugin

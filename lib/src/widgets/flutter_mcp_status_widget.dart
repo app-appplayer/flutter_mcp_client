@@ -66,7 +66,7 @@ class FlutterMcpStatusWidget extends StatefulWidget {
 
 class _FlutterMcpStatusWidgetState extends State<FlutterMcpStatusWidget> {
   /// Current connection state
-  client_lib.ConnectionState _connectionState = client_lib.ConnectionState.disconnected;
+  client_lib.ClientConnectionState _connectionState = client_lib.ClientConnectionState.disconnected;
 
   @override
   void initState() {
@@ -88,15 +88,15 @@ class _FlutterMcpStatusWidgetState extends State<FlutterMcpStatusWidget> {
   /// Get color for current connection state
   Color _getColorForState(FlutterMcpStatusStyle style) {
     switch (_connectionState) {
-      case client_lib.ConnectionState.connected:
+      case client_lib.ClientConnectionState.connected:
         return style.connectedColor;
-      case client_lib.ConnectionState.disconnected:
+      case client_lib.ClientConnectionState.disconnected:
         return style.disconnectedColor;
-      case client_lib.ConnectionState.connecting:
+      case client_lib.ClientConnectionState.connecting:
         return style.connectingColor;
-      case client_lib.ConnectionState.error:
+      case client_lib.ClientConnectionState.error:
         return style.errorColor;
-      case client_lib.ConnectionState.paused:
+      case client_lib.ClientConnectionState.paused:
         return style.pausedColor;
     }
   }
@@ -104,15 +104,15 @@ class _FlutterMcpStatusWidgetState extends State<FlutterMcpStatusWidget> {
   /// Get icon for current connection state
   IconData _getIconForState() {
     switch (_connectionState) {
-      case client_lib.ConnectionState.connected:
+      case client_lib.ClientConnectionState.connected:
         return Icons.check_circle;
-      case client_lib.ConnectionState.disconnected:
+      case client_lib.ClientConnectionState.disconnected:
         return Icons.cancel;
-      case client_lib.ConnectionState.connecting:
+      case client_lib.ClientConnectionState.connecting:
         return Icons.sync;
-      case client_lib.ConnectionState.error:
+      case client_lib.ClientConnectionState.error:
         return Icons.error;
-      case client_lib.ConnectionState.paused:
+      case client_lib.ClientConnectionState.paused:
         return Icons.pause_circle_filled;
     }
   }
@@ -120,15 +120,15 @@ class _FlutterMcpStatusWidgetState extends State<FlutterMcpStatusWidget> {
   /// Get text for current connection state
   String _getTextForState() {
     switch (_connectionState) {
-      case client_lib.ConnectionState.connected:
+      case client_lib.ClientConnectionState.connected:
         return 'Connected';
-      case client_lib.ConnectionState.disconnected:
+      case client_lib.ClientConnectionState.disconnected:
         return 'Disconnected';
-      case client_lib.ConnectionState.connecting:
+      case client_lib.ClientConnectionState.connecting:
         return 'Connecting...';
-      case client_lib.ConnectionState.error:
+      case client_lib.ClientConnectionState.error:
         return 'Connection Error';
-      case client_lib.ConnectionState.paused:
+      case client_lib.ClientConnectionState.paused:
         return 'Paused';
     }
   }
@@ -248,14 +248,14 @@ class _FlutterMcpStatusWidgetState extends State<FlutterMcpStatusWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (_connectionState == client_lib.ConnectionState.disconnected ||
-                      _connectionState == client_lib.ConnectionState.error)
+                  if (_connectionState == client_lib.ClientConnectionState.disconnected ||
+                      _connectionState == client_lib.ClientConnectionState.error)
                     ElevatedButton(
                       onPressed: _connect,
                       child: const Text('Connect'),
                     ),
-                  if (_connectionState == client_lib.ConnectionState.connected ||
-                      _connectionState == client_lib.ConnectionState.paused)
+                  if (_connectionState == client_lib.ClientConnectionState.connected ||
+                      _connectionState == client_lib.ClientConnectionState.paused)
                     ElevatedButton(
                       onPressed: _disconnect,
                       style: ElevatedButton.styleFrom(

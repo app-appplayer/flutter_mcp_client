@@ -108,7 +108,7 @@ class FlutterMcpClientManager {
   }
   
   /// Get clients filtered by connection state
-  List<FlutterMcpClient> getClientsByState(ConnectionState state) {
+  List<FlutterMcpClient> getClientsByState(ClientConnectionState state) {
     if (_isDisposed) {
       return [];
     }
@@ -121,7 +121,7 @@ class FlutterMcpClientManager {
   
   /// Get all connected clients
   List<FlutterMcpClient> getConnectedClients() {
-    return getClientsByState(ConnectionState.connected);
+    return getClientsByState(ClientConnectionState.connected);
   }
   
   /// Connect all registered clients
@@ -133,7 +133,7 @@ class FlutterMcpClientManager {
     final clients = getAllClients();
     
     for (final client in clients) {
-      if (client.connectionState == ConnectionState.disconnected) {
+      if (client.connectionState == ClientConnectionState.disconnected) {
         try {
           // Only try to connect if client has a transport
           final transport = client.getTransport();
